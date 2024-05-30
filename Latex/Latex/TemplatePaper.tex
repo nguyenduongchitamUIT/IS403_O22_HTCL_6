@@ -1,0 +1,931 @@
+\documentclass{ieeeojies}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{enumitem}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+\title{UTILIZING STATISTICAL MODEL & MACHINE LEARNING FOR VIETNAMESE STOCK PRICE FORECASTING}
+
+\author{\uppercase{DUONG CHI TAM NGUYEN}\authorrefmark{1},
+\uppercase{HIEN THAO DO\authorrefmark{2}, and MANH HUY HUYNH}\authorrefmark{3}}
+
+\address[1]{Faculty of Information Systems, University of Information Technology, (e-mail: 21520439@gm.uit.edu.vn)}
+\address[2]{Faculty of Information Systems, University of Information Technology, (e-mail: 21520460@gm.uit.edu.vn)}
+\address[3]{Faculty of Information Systems, University of Information Technology, (e-mail: 21520259@gm.uit.edu.vn)}
+
+\markboth
+{Author \headeretal: DUONG CHI TAM NGUYEN, HIEN THAO DO, MANH HUY HUYNH}
+{Author \headeretal: DUONG CHI TAM NGUYEN, HIEN THAO DO, MANH HUY HUYNH}
+
+\begin{abstract}
+\\In recent years, stock trading has always been a significant part of the financial world. With the potential of the stock market and the rapid development of machine learning, stock prices prediction has been a hot issue. Investors can reduce potential losses, make informed investment decisions and promote development by using forecast tool. In this study, we will use Statistical Model and Machine Learning Algorithms such as Linear Regression, ARIMA, RNN, GRU, LSTM, AR-MOS, Random Forest, Neural Hierarchical Interpolation for Time Series Forecasting (N-HiTS) to forecast the stock prices of three corporations in Vietnam.
+\end{abstract}
+
+\begin{keywords}
+\\Stock price forecasting, autoregressive adjusted model output statistics (AR-MOS), Random Forest, Neural Hierarchical Interpolation for Time Series Forecasting (N-HiTS), Time series analysis, Predictive analytics.
+\end{keywords}
+
+\titlepgskip=-15pt
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+ A stock market is a public market where you can buy and sell shares for publicly listed companies. The stocks represent ownership in the company. The stock exchange is the mediator that allows the buying and selling of shares. Stock Price Prediction using machine learning algorithm helps to discover the future value of company stock and other financial assets traded on an exchange. [1]\\
+Vietnam’s stock market has experienced significant growth in recent years. However, forecasting stock prices in this market remains a challenging due to the complexities of financial market. There are other factors involved in the prediction, such as physical and psychological factors, rational and irrational behavior, and so on. All these factors combine to make share prices dynamic and volatile. This makes it very difficult to predict stock prices with high accuracy [1]. In order to analyze and make predictions about financial data, particularly stock prices, machine learning techniques have become increasingly effective. \\
+In this study, we especially focus on applying machine learning algorithms to forecast stock values on three corporations in Vietnam: Vietnam Dairy Products JSC (VNM), Saigon Beer Alcohol Beverage Corp (SAB), Masan Group Corp (MSN). By employing machine learning such as Random Forest, AR-MOS, N-HiTS, …; this research seeks to enhance the accuracy and reliability of stock price prediction, enabling stakeholders in Vietnam's stock market to make well-informed investment decisions.\\
+
+\section{Related Works}
+In recent years, there has been a substantial amount of research dedicated to predicting stock prices using various machine learning and statistical models.\\
+V. Gururaj, in a 2019 study [2], focused on stock market prediction employing Linear Regression and Support Vector Machines, demonstrating the application of these models in forecasting stock prices.\\
+Zhong and Enke in 2019. Predicting the daily return direction of the stock market using hybrid machine learning algorithms. For evaluating a classification model’s accuracy, recall, precision, and F-score, are commonly preferred metrics, and for regression or price forecasting models, root mean square error (RMSE) and mean absolute percentage error (MAPE) are often employed. Jose el at. in 2019 An Efficient System to Predict and Analyze Stock Data using Hadoop Techniques.\\
+
+\section{Materials}
+\subsection{Dataset}
+
+We collected three datasets on Investing.com from March 1, 2019 to March 25, 2024. The data related to stock price of three large companies in Vietnam:  Vietnam Dairy Products JSC (VNM), Saigon Beer Alcohol Beverage Corp (SAB), Masan Group Corp (MSN). The dataset has 7 attribute columns including: Date, Price,Open,High,Low,Vol,Change. As the goal is
+to forecast close prices, only data relating to column “Price"
+(VND) will be processed.
+
+\subsection{Descriptive Statistics}
+\begin{table}[H]
+  \centering
+  \caption{MSN, SAB, VNM’s Descriptive Statistics}
+\begin{tabular}{|>{\columncolor{red!20}}c|c|c|c|}
+    \hline
+     \rowcolor{red!20} & MSN & SAB & VNM \\ \hline
+     Count & 1268 & 1268 & 1268 \\ \hline
+     Mean & 82,666 & 172,241 & 83,970\\ \hline
+     Std & 23,707 & 52,553 & 12,403\\ \hline
+     Min & 39,997 & 56,300 & 61,260\\ \hline
+     25\% & 67,884 & 151,953 & 73,417\\ \hline
+     50\% & 79,000 & 170,555 & 80,836\\ \hline
+     75\% & 97,675 & 187,311 & 95,915\\ \hline
+     Max & 142,286 & 289,000 & 111,828\\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BoxPlotofMSN.png}
+    \caption{MSN stock price's boxplot}
+    \label{fig:1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{HistogramOfMSN.png}
+    \caption{MSN stock price's histogram}
+    \label{fig:2}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BoxPlotOfSAB.png}
+    \caption{SAB stock price's boxplot}
+    \label{fig:1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{HistogramOfSAB.png}
+    \caption{SAB stock price's histogram}
+    \label{fig:2}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{BoxPlotOfVNM.png}
+    \caption{VNM stock price's boxplot}
+    \label{fig:1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{HistogramOfVNM.png}
+    \caption{VNM stock price's histogram}
+    \label{fig:2}
+    \end{minipage}
+\end{figure}
+
+\section{Methodology}
+\subsection{Arima}
+An autoregressive integrated moving average, or ARIMA, is a statistical analysis model that uses time series data to either better understand the data set or to predict future trends [3]. The ARIMA model incorporates three key elements from the Box-Jenkins method: Autoregressive (AR), Integrated (I) – uses differencing of raw observations to make the time series stationary, Moving Average (MA).
+
+[5][6] ARIMA model is classified as an ARIMA(p,d,q) model, where:
+\begin{itemize}
+    \item p is the order of AR term; indicates the number of lagged orders considered in the model.
+    \item d defines the number of difference to make series stationary.
+    \item q is the order of MA term; represents the number of lagged forecast errors in the prediction equation.
+\end{itemize}
+The formula to denote the AR is shown:
+\[ Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} +...+ \phi_p Y_{t-p} + \epsilon_t\]
+Which t is the time series so \(Y_t\) is the value of the time series at time t; p is used to calculate the number of orders of previous values; \(\phi\) is the autoregressive coefficients; \(\epsilon_t\) is the error term. The expected value is zero. 
+The formula to denote the AR is shown:
+\[ Y_t = c + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} +...+ \theta_p  \epsilon_{t-p}\]
+Where q denotes the quantity of orders required to locate the historical values, is used to specify how many orders are included in the AR computation. If we combine differencing with the autoregression and the moving average model, the ARIMA(p, d, q) can be written as:
+\[ Y'_t = c + \phi_1 Y'_{t-1} +...+ \phi_p Y'_{t-p} + \theta_1 \epsilon_{t-1} +...+ \theta_p  \epsilon_{t-p} + \epsilon_t\]
+Where \(Y'_t\) is the differenced series; the “predictors” on the right hand side include both lagged values of  \(Y_t\) and lagged errors.
+\subsection{Linear Regression}
+Linear regression is used to predict the value of a variable based on the value of another variable. The variable need to predict is called the dependent variable. The variable that is used to predict the other variable's value is called the independent variable. Linear regression fits a straight line or surface that minimizes the discrepancies between predicted and actual output values. [7] \\
+A multiple linear regression model has the formula as below: [8]
+\[ Y = \beta_0 + \beta_1X_1 + \beta_2X_2 +...+ \beta_nX_n + \epsilon\]
+Where:
+\begin{itemize}
+    \item $Y$ is the dependent or predicted variable.
+    \item $\begin{aligned}[t]
+            X_1,...X_n & \text{ are the independent (explanatory) variables.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \beta_0 & \text{ is the intercept term.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \beta_1,...\beta_n & \text{ are the regression coefficients for the independent variables.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \epsilon & \text{ is the random error.}
+            \end{aligned}$        
+\end{itemize}
+\subsection{AR-MOS}
+AR-MOS (Auto-Regressive Model Output Statistics) is a method that combines the auto-regressive (AR) model and MOS (Model Output Statistics) to improve the accuracy of weather forecasts. By integrating these methods, AR-MOS corrects systematic errors in numerical weather prediction models and utilizes past forecast data to enhance the accuracy of future predictions. 
+Autoregressive models (AR) belong to time series models. These models capture the relationship between an observation and several lagged observations (previous time steps). The core idea is that the current value of a time series can be expressed as a linear combination of its past values, with some random noise.[9]
+
+Mathematically, an autoregressive model of order p, denoted as AR(p), can be expressed as:
+\[ Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} +...+ \phi_p Y_{t-p} + \epsilon_t\]
+Which t is the time series so \(Y_t\) is the value of the time series at time t; p is used to calculate the number of orders of previous values; \(\phi\) is the autoregressive coefficients; \(\epsilon_t\) is the error term.
+
+Model Output Statistics (MOS) is a method for improving weather forecasts by combining information from numerical weather prediction models with actual observational data. MOS uses linear regression analysis to adjust predictions from the model. This method determines the relationship between forecasts from models (biased forecasts) and actual monitoring data (Nature solution).
+
+
+\subsection{Random Forest}
+Random Forest is a supervised machine learning algorithm that is used for both classification and regression problems. In classification tasks, the algorithm uses the mode of the predictions of the individual trees to make the final prediction. In regression tasks, the algorithm uses the mean of the predictions of the individual trees. 
+Random forest algorithm combines the output from multiple decision trees to get a single result. It has three main hyperparameters, which need to be set before training. These include node size, the number of trees, and the number of features sampled. From there, the random forest classifier can be used to solve for regression or classification problems. [11] 
+
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{Random Forest.png}
+    \end{minipage}
+\end{figure}
+
+[10] The following steps explain the working Random Forest Algorithm:
+\begin{enumerate}
+  \item Select random samples from the given data or training set.
+  \item Individual decision trees are constructed for each sample.
+  \item Each decision tree will generate an output.
+  \item Finally, the output is considered based on Majority Voting/Averaging.
+\end{enumerate}
+
+\subsection{RNN}
+Recurrent Neural Network(RNN) is a type of Neural Network where the output from the previous step is fed as input to the current step. In traditional neural networks, all the inputs and outputs are independent of each other.[12] RNNs differ from traditional feedforward neural networks in that they maintain a "hidden state" which contains information about previous elements in the sequence. This hidden state is updated at each time step t based on the input at that time and the hidden state from the previous time step.
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{Simple RNN.png}
+    \caption{Simple Recurrent Neural Network [13]}
+    \label{fig:1}
+    \end{minipage}
+\end{figure}
+A Neural Network usually include 3 specific layers as :
+\begin{itemize}
+    \item \textbf{Input layer (\(X_t\)): } The value input at time t.
+\end{itemize}
+\begin{itemize}
+    \item \textbf{Hidden layer (\(H_t\)):  } The value containing the state information at time t.
+\end{itemize}
+\begin{itemize}
+    \item \textbf{Output (\(Y_t\)):  } The value output at time t.
+\end{itemize}
+
+At any given time t, the current input is a combination of input at \(X_t\) and \(X_{t-1}\). The output at any given time is fetched back to the network to improve on the output. [13]
+
+
+ \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{Fully connected RNN.png}
+    \caption{Fully connected Recurrent Neural Network [14]}
+    \label{fig:1}
+    \end{minipage}
+\end{figure}
+Formula of the algorithm:
+\[h_{(t)}\ =\ f_c(h_{(t-1)}\ ,\ x_{(t)})\]
+Where : 
+\begin{itemize}
+    \item 	\(h_t\): new state.
+\end{itemize}
+\begin{itemize}
+     \item \(h_t\): old state.
+ \end{itemize}
+ \begin{itemize}
+     \item \(f_c\): function with parameter c .
+ \end{itemize}
+
+\begin{itemize}
+    \item\(x_t\): input vector at time step t.
+\end{itemize}
+
+
+\subsection{LSTM}
+LSTM networks are an extension of recurrent neural networks (RNNs) mainly introduced to handle situations where RNNs fail. [15] Unlike traditional RNNs, LSTM networks have a more complex structure with additional components called gates, which control the flow of information through the network. These gates include the input gate, forget gate, and output gate, each of which serves a specific purpose in managing the information flow. LSTM have been successfully used in a variety of tasks such as speech recognition, natural language processing, image captioning, and video analysis, among others. 
+ \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{The LSTM structure.jpg}
+    \caption{The LSTM cell structure.}
+    \label{fig:1}
+    \end{minipage}
+\end{figure}
+The cells store information, whereas the gates manipulate memory. There are three entrances:[16]
+\begin{itemize}
+    \item  \textbf{Input Gate:}  It determines which of the input values should be used to change the memory. The sigmoid function determines whether to allow 0 or 1 values through. And the tanh function assigns weight to the data provided, determining their importance on a scale of -1 to 1 . 
+\end{itemize}
+\[i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i)\]
+\[C_t = tanh(W_c \cdot [h_{t-1}, x_t] + b_c)\]
+
+\begin{itemize}
+    \item  \textbf{Forget Gate: }  It finds the details that should be removed from the block. It is decided by a sigmoid function. For each number in the cell state Ct-1, it looks at the preceding state (ht-1) and the content input (\(x_t\)) and produces a number between 0 (omit this) and 1 (keep this).
+\end{itemize}
+\[f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)\]
+\begin{itemize}
+    \item  \textbf{Output Gate }  The block’s input and memory are used to determine the output. The sigmoid function determines whether to allow 0 or 1 values through. And the tanh function determines which values are allowed to pass through 0, 1. And the tanh function assigns weight to the values provided, determining their relevance on a scale of -1 to 1 and multiplying it with the sigmoid output.
+\end{itemize}
+\[o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o)\]
+\[h_t = o_t \cdot \tanh(C_t)\]
+where: 
+\begin{itemize}
+    \item \(\sigma\) : is the sigmoid activation function.
+    
+\end{itemize}
+\begin{itemize}
+    \item \(i_t\),\(f_t\), \(o_t\) are the input, forget, and output gate vectors, respectively.  
+\end{itemize}
+\begin{itemize}
+    \item W and b are the corresponding weight matrices and bias vectors.
+\end{itemize}
+\begin{itemize}
+    \item \(h_t\) : is the hidden state/output at time t.
+\end{itemize}
+\begin{itemize}
+    \item \([h_{t-1}, x_t]\): denotes the concatenation of the previous hidden state and the current input.
+\end{itemize}
+\begin{itemize}
+    \item \(x_t\): is the input at time t.
+\end{itemize}
+\begin{itemize}
+    \item \(C_t\): is the cell state at time t.
+\end{itemize}
+\subsection{GRU}
+A Gated Recurrent Unit (GRU) is a type of recurrent neural network (RNN) architecture that is used in the field of deep learning. GRUs are particularly effective for processing sequences of data for tasks like time series prediction, natural language processing, and speech recognition. They address some of the shortcomings of traditional RNNs, particularly issues related to long-term dependencies in sequence data.[17]
+
+GRU is to use gating mechanisms to selectively update the hidden state of the network at each time step. The gating mechanisms are used to control the flow of information in and out of the network. The GRU has two gating mechanisms, called the reset gate and the update gate. [18] The update gate determines how much of the past information needs to be passed along to the future. The reset gate decides how much of the past information to discard.
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{Gated Recurrent Unit’s architecture.png}
+    \caption{Gated Recurrent Unit’s architecture}
+    \label{fig:1}
+    \end{minipage}
+\end{figure}
+The equations used to calculate the reset gate, update gate, and hidden state of a GRU are as follows [18]:
+\begin{itemize}[label={--}]
+    \item \textbf{Update gate:} \[z_t = \sigma(W_z \cdot [h_{t-1}, x_t])\]
+    \item \textbf{Reset gate:} \[r_t = \sigma(W_r \cdot [h_{t-1}, x_t])\]
+    \item \textbf{Candidate Hidden State:} \[h'_t = \tanh(W \cdot [r_t \cdot h_{t-1}, x_t] + b)\]
+    \item \textbf{Final Hidden State:}  \[h_t = (1 - z_t) \cdot h_{t-1} + z_t \cdot h'_t\]
+\end{itemize}
+
+Where: 
+\begin{itemize}
+    \item $\begin{aligned}[t]
+            W_z, W_t, W & \text{ are weight matrices.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            x_t & \text{ is the current input.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            h_{t-1} & \text{ is the previous hidden state.} \\
+            \end{aligned}$
+   \item $\begin{aligned}[t]
+            h_t & \text{ is the current hidden state.} \\
+            \end{aligned}$     
+    \item $b$ represents the bias.
+\end{itemize}
+
+\subsection{N-HiTS}
+The Neural Hierarchical Interpolation for Time Series Forecasting (N-HiTS) is a deep learning algorithm designed for time series forecasting, addressing challenges in long-horizon predictions and capturing complex data patterns. It builds on concepts from the N-BEATS architecture, using local nonlinear projections onto basis functions through multiple blocks.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{N-HiTS.png}
+    \caption{N-HiTS’s architecture}
+    \label{fig:1}
+    \end{minipage}
+\end{figure}
+
+\textbf{Multi-Rate Signal Sampling:} Each block in the model uses a MaxPool layer with varying kernel sizes to analyze input components at different scales. Larger kernel sizes filter out high-frequency components, allowing the block to focus on long-term trends, which is crucial for long-horizon forecasting.
+
+\begin{itemize}
+    \item  \textbf{MaxPooling Operation:} 
+\end{itemize}
+\begin{equation}
+y_i^{(k)} = \max_{j \in \mathcal{W}_k} x_{i+j}
+\end{equation}
+Where: 
+\begin{itemize}
+    \item $\begin{aligned}[t]
+            y_i^{(k)} & \text{ is the output after MaxPooling.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            k, x & \text{ is the input time series.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            {W}_k & \text{ represents the window of size k.} \\
+            \end{aligned}$
+\end{itemize}
+
+\textbf{Hierarchical Interpolation:} The algorithm performs hierarchical interpolation by dividing the prediction task across multiple blocks, each specializing in different frequencies and scales. This structure allows N-HiTS to manage the complexity of long-horizon forecasts without excessively increasing computational demands.
+
+\begin{itemize}
+    \item  \textbf{Block Output Composition:} 
+\end{itemize}
+\begin{equation}
+y_t = \sum_{i=1}^B f_i(x_t; \theta_i)
+\end{equation}
+Where: 
+\begin{itemize}
+    \item $\begin{aligned}[t]
+            y_t & \text{ is the output signal.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            B & \text{ is the input time series.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            f_i & \text{ represents the interpolation function of the i block.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \theta_i & \text{ are the parameters of the i block.} \\
+            \end{aligned}$
+\end{itemize}
+
+\textbf{Non-Linear Regression:} Each block uses non-linear regression to produce forward and backward interpolation coefficients. These coefficients are then used to generate backcast and forecast outputs, refining the model’s predictions iteratively through each block.
+
+\begin{itemize}
+    \item  \textbf{Non-Linear Activation Function:} 
+\end{itemize}
+\begin{equation}
+y = \sigma(Wx + b)
+\end{equation}
+Where: 
+\begin{itemize}
+    \item $\begin{aligned}[t]
+            y & \text{ is the output.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \sigma & \text{ is a non-linear activation function.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            W & \text{ is the weight matrix.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            x & \text{ is the input.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            b & \text{ is the bias vector.} \\
+            \end{aligned}$
+\end{itemize}
+
+\begin{itemize}
+    \item  \textbf{Forward Interpolation Coefficients:} 
+\end{itemize}
+\begin{equation}
+\alpha_t = f_{\text{forward}}(x_t; \theta_f)
+\end{equation}
+Where: 
+\begin{itemize}
+    \item $\begin{aligned}[t]
+            \alpha_t & \text{ are the forward interpolation coefficients.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            f_{\text{forward}} & \text{ is the non-linear function for forward interpolation.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \theta_f & \text{ are its parameters.} \\
+            \end{aligned}$
+\end{itemize}
+
+\begin{itemize}
+    \item  \textbf{Backward Interpolation Coefficients:} 
+\end{itemize}
+\begin{equation}
+\beta_t = f_{\text{backward}}(x_t; \theta_b)
+\end{equation}
+Where: 
+\begin{itemize}
+    \item $\begin{aligned}[t]
+            \beta_t & \text{ are the backward interpolation coefficients.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            f_{\text{backward}} & \text{ is the non-linear function for backward interpolation.} \\
+            \end{aligned}$
+    \item $\begin{aligned}[t]
+            \theta_f & \text{ are its parameters.} \\
+            \end{aligned}$
+\end{itemize}
+
+\section{Result}
+\subsection{VNM}
+    \begin{table}[h]
+\centering
+\resizebox{0.5\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|}
+     \hline
+       Model & Train - Test -Val  & RMSE & MAE & MAPE \\ 
+     \hline
+      \multirow{3}{*}{ARIMA} & 7 - 2 & 4431.97 & 3725.52 & 4.97 \%\\
+      \cline{2-5}
+     & 6 - 3 & 4333.4 & 3522.63 & 4.86\% \\
+      \cline{2-5}
+     & 5 - 3 & 6487.09 & 5166.43 & 7.18\% \\
+    \hline
+      \multirow{3}{*}{LR} & 7 - 2 & 7715.85 & 6647.42 & 8.72 \%\\
+      \cline{2-5}
+     & 6 - 3 & 6246.93 & 5097.51 & 7.12\% \\
+      \cline{2-5}
+     & 5 - 3 & 7379.90 & 5773.86 & 8.04\% \\
+    \hline
+     \multirow{3}{*}{Random Forest} & 7 - 2 & 4224.46 & 3512.26 & 4.72 \%\\
+      \cline{2-5}
+     & 6 - 3 & 4341.49 & 3527.77 & 4.9\% \\
+      \cline{2-5}
+     & 5 - 3 & 6559.76 & 5221.55 & 7.26\% \\
+     \hline
+     \multirow{3}{*}{RNN} & 7 - 2 & 1049.66 & 773.77 & 1.05 \%\\
+      \cline{2-5}
+     & 6 - 3 & 1578.46 & 1227.51 & 1.64\% \\
+      \cline{2-5}
+     & 5 - 3 & 1873.68 & 1512.48 & 2.08\% \\
+    \hline
+    \multirow{3}{*}{GRU} & 7 - 2 & 946.95 & 719.29 & 0.99 \%\\
+      \cline{2-5}
+     & 6 - 3 & 1192.8 & 945.71 & 1.28\% \\
+      \cline{2-5}
+     & 5 - 3 & 1507.96 & 1199.05 & 1.65\% \\
+     \hline
+     \end{tabular}%
+}
+\end{table}
+\subsection{SAB}
+\resizebox{0.5\textwidth}{!}{%
+    \begin{tabular}{|c|c|c|c|c|c|}
+     \hline
+       Model & Train - Test & RMSE & MAE & MAPE \\ 
+     \hline
+      \multirow{3}{*}{ARIMA} & 7 - 2 & 19313.29 & 13338.84 & 9.1 \%\\
+      \cline{2-5}
+     & 6 - 3 & 23699.17 & 18970.76 & 11.11\% \\
+      \cline{2-5}
+     & 5 - 3 & 27882.05 & 23405.95 & 13.37\% \\
+    \hline
+      \multirow{3}{*}{LR} & 7 - 2 & 58488.38 & 57662.72 & 33.55 \%\\
+      \cline{2-5}
+     & 6 - 3 & 76623.36 & 72857.47 & 42.77\% \\
+      \cline{2-5}
+     & 5 - 3 & 77926.55 & 69197.92 & 40.18\% \\
+    \hline
+       \multirow{3}{*}{Random Forest} & 7 - 2 & 21196.72 & 14774.03 & 10.07 \%\\
+      \cline{2-5}
+     & 6 - 3 & 23468.82 & 18718.24 & 10.97\% \\
+      \cline{2-5}
+     & 5 - 3 & 27644.09 & 23137.08 & 13.21\% \\
+     \hline
+       \multirow{3}{*}{RNN} & 7 - 2 & 7682.49 & 2450.47 & 1.94 \%\\
+      \cline{2-5}
+     & 6 - 3 & 6656.28 & 2704.12 & 1.85\% \\
+      \cline{2-5}
+     & 5 - 3 & 39976883814.79 & 39844316726.79 & 99.99\% \\
+    \hline
+    \multirow{3}{*}{GRU} & 7 - 2 & 7901.73 & 2513.89 & 2.06 \%\\
+      \cline{2-5}
+     & 6 - 3 & 6147.74 & 2455.68 & 1.7\% \\
+      \cline{2-5}
+     & 5 - 3 & 3534.6 & 2640.74 & 1.54\% \\
+     \hline
+     \end{tabular} %
+     }
+\subsection{MSN}
+\resizebox{0.5\textwidth}{!}{%
+    \begin{tabular}{|c|c|c|c|c|c|}
+     \hline
+       Model & Train - Test & RMSE & MAE & MAPE \\ 
+     \hline
+      \multirow{3}{*}{ARIMA} & 7 - 2 & 28937.78 & 27217.14 & 33.71 \%\\
+      \cline{2-5}
+     & 6 - 3 & 24285.37 & 20273.77 & 24.47\% \\
+      \cline{2-5}
+     & 5 - 3 & 64424.96 & 50727.98 & 52.6\% \\
+    \hline
+      \multirow{3}{*}{LR} & 7 - 2 & 40688.19 & 38391.40 & 47.41 \%\\
+      \cline{2-5}
+     & 6 - 3 & 32367.83 & 26797.35 & 32.30\% \\
+      \cline{2-5}
+     & 5 - 3 & 36756.58 & 32791.40 & 28.26\% \\
+    \hline
+         \multirow{3}{*}{Random Forest} & 7 - 2 & 29728.82 & 28042.1 & 31.7 \%\\
+      \cline{2-5}
+     & 6 - 3 & 26650.52 & 22516.24 & 27.16\% \\
+      \cline{2-5}
+     & 5 - 3 & 15785.1 & 13314.8 & 12.66\% \\
+     \hline
+         \multirow{3}{*}{RNN} & 7 - 2 & 2066.11 & 1557.58 & 1.96 \%\\
+      \cline{2-5}
+     & 6 - 3 & 2233.55 & 1677.24 & 1.92\% \\
+      \cline{2-5}
+     & 5 - 3 & 3098.69 & 2365.75 & 2.33\% \\
+    \hline
+     \multirow{3}{*}{GRU} & 7 - 2 & 1609.74 & 1188.48 & 1.5 \%\\
+      \cline{2-5}
+     & 6 - 3 & 2314.93 & 1716.83 & 1.97\% \\
+      \cline{2-5}
+     & 5 - 3 & 3159.38 & 2380.46 & 2.35\% \\
+     \hline
+     \end{tabular} %
+     }
+
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 7-2-1.png}
+    \caption{ARIMA model’s result for VNM with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 6-3-1.png}
+    \caption{ARIMA model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 5-3-2.png}
+    \caption{ARIMA model’s result for VNM with the rate of 5-3-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 7-2-1.png}
+    \caption{ARIMA model’s result for SAB with the rate of 7-2-1}
+
+    \end{minipage}
+   \end{figure}
+
+   \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 6-3-1.png}
+    \caption{ARIMA model’s result for SAB with the rate of 6-3-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 5-3-2.png}
+    \caption{ARIMA model’s result for SAB with the rate of 5-3-2}
+    \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 7-2-1.png}
+    \caption{ARIMA model’s result for MSN with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 6-3-1.png}
+    \caption{ARIMA model’s result for MSN with the rate of 6-3-1}
+    \end{minipage}
+   \end{figure}
+
+   \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 5-3-2.png}
+    \caption{ARIMA model’s result for MSN with the rate of 5-3-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 7-2-1.png}
+    \caption{LR model’s result for VNM with the rate of 7-2-1}
+    \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 6-3-1.png}
+    \caption{LR model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 5-3-2.png}
+    \caption{LR model’s result for VNM with the rate of 5-3-2}
+    \end{minipage}
+   \end{figure}
+   
+   \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 7-2-1.png}
+    \caption{LR model’s result for SAB with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 6-3-1.png}
+    \caption{LR model’s result for SAB with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+    
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 5-3-2.png}
+    \caption{LR model’s result for SAB with the rate of 5-3-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 7-2-1.png}
+    \caption{LR model’s result for MSN with the rate of 7-2-1}
+    \end{minipage}
+   \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 6-3-1.png}
+    \caption{LR model’s result for MSN with the rate of 6-3-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 5-3-2.png}
+    \caption{LR model’s result for MSN with the rate of 5-3-2}
+    \end{minipage}
+     \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 7-2-1.png}
+    \caption{Random Forest model’s result for VNM with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 6-3-1.png}
+    \caption{Random Forest model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 5-3-2.png}
+    \caption{Random Forest model’s result for VNM with the rate of 5-3-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 7-2-1.png}
+    \caption{Random Forest model’s result for SAB with the rate of 7-2-1}
+    \end{minipage}
+   \end{figure}
+
+     \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 6-3-1.png}
+    \caption{Random Forest model’s result for SAB with the rate of 6-3-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 5-3-2.png}
+    \caption{Random Forest model’s result for SAB with the rate of 5-3-2}
+    \end{minipage}
+
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 7-2-1.png}
+    \caption{Random Forest model’s result for MSN with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 6-3-1.png}
+    \caption{Random Forest model’s result for MSN with the rate of 6-3-1}
+    \end{minipage}
+   \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 5-3-2.png}
+    \caption{Random Forest model’s result for MSN with the rate of 5-3-2}
+    \end{minipage}
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 7-2-1.png }
+    \caption{RNN model’s result for VNM with the rate of 7-2-1}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 6-3-1.png }
+    \caption{RNN model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 5-3-2.png }
+    \caption{RNN model’s result for VNM with the rate of 5-3-2}
+    \end{minipage}
+    \end{figure}
+    
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 7-2-1.png }
+    \caption{RNN model’s result for SAB with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 6-3-1.png }
+    \caption{RNN model’s result for SAB with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+    
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 5-3-2.png }
+    \caption{RNN model’s result for SAB with the rate of 5-3-2}
+    \end{minipage}
+     \hfill
+     \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 7-2-1.png  }
+    \caption{RNN model’s result for MSN  with the rate of 7-2-1}
+    \end{minipage}
+     \end{figure}
+     
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 6-3-1.png }
+    \caption{RNN model’s result for MSN with the rate of 6-3-1}
+    \end{minipage}
+     \hfill
+     \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 5-3-2.png  }
+    \caption{RNN model’s result for MSN  with the rate of 5-3-2}
+    \end{minipage}
+\end{figure}
+
+   \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 7-2-1.png}
+    \caption{GRU model’s result for VNM with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 6-3-1.png}
+    \caption{GRU model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+    
+    \begin{figure}[H]
+    
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 5-3-2.png}
+    \caption{GRU model’s result for VNM with the rate of 5-3-2}
+    \end{minipage}   
+   \hfill
+    \centering
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 7-2-1.png}
+    \caption{GRU model’s result for SAB with the rate of 7-2-1}
+    \end{minipage}
+     \end{figure}
+     
+     \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 6-3-1.png}
+    \caption{GRU model’s result for SAB with the rate of 6-3-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 5-3-2.png}
+    \caption{GRU model’s result for SAB with the rate of 5-3-2}
+    \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 7-2-1.png}
+    \caption{GRU model’s result for MSN with the rate of 7-2-1}
+    \end{minipage}   
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 6-3-1.png}
+    \caption{GRU model’s result for MSN with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+   \begin{figure}[H]
+
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 5-3-2.png}
+    \caption{GRU model’s result for MSN with the rate of 5-3-2}
+    \end{minipage}
+    \end{figure}
+
+   
+%% UNCOMMENT these lines below (and remove the 2 commands above) if you want to embed the bibliografy.
+\begin{thebibliography}{00}
+\bibitem{b1} Avijeet Biswal, “Stock Market Prediction using Machine Learning in 2024”, Apr. 15, 2024
+\bibitem{b2} V. Gururaj, ”Stock Market Prediction using Linear Regression and Support Vector Machines” vol. 14, no. 8, 2019.
+
+\bibitem{b3} Adam Hayes, “Autoregressive Integrated Moving Average (ARIMA) Prediction Model”, April 05, 2024
+https://www.investopedia.com/terms/a/autoregressive-integrated-moving-average-arima.asp
+\bibitem{b4} Aayush Bajaj, “ARIMA and SARIMA: Real-World Time Series Forecasting”, Aug. 18th, 2023.
+https://neptune.ai/blog/arima-sarima-real-world-time-series-forecasting-guide
+\bibitem{b5} Robert Nau, Duke University, Fuqua School of Business. "Introduction to ARIMA: Nonseasonal Models”
+https://people.duke.edu/~rnau/411arim.htm
+\bibitem{b6} Hyndman, R.J., and Athanasopoulos, G. (2018) Forecasting: principles and practice, 2nd edition, OTexts: Melbourne, Australia. 
+\bibitem{b7} What Is Linear Regression? | IBM.
+\bibitem{b8} Multiple Linear Regression (MLR) Definition, Formula, and Example (investopedia.com).
+\bibitem{b9} https://www.geeksforgeeks.org/autoregressive-ar-model-for-time-series-forecasting/
+https://arxiv.org/pdf/2402.00555v1
+\bibitem{b10} Sruthi ER, “Understand Random Forest Algorithms With Examples”
+https://www.analyticsvidhya.com/blog/2021/06/understanding-random-forest/
+\bibitem{b11} IBM, “What is random forest?”, Last updated: Feb. 22, 2024.
+\bibitem{b12} https://www.geeksforgeeks.org/introduction-to-recurrent-neural-network/
+\bibitem{b13} https://community.arm.com/arm-community-blogs/b/ai-and-ml-blog/posts/rnn-models-ethos-u
+\bibitem{b14}  https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn
+\bibitem{b15}https://www.geeksforgeeks.org/understanding-of-lstm-networks/
+\bibitem{b16}https://www.analyticsvidhya.com/blog/2022/03/an-overview-on-long-short-term-memory-lstm/
+\bibitem{b17}“Gated Recurrent Unit,” DeepAI, May 17, 2019 https://deepai.org/machine-learning-glossary-and-terms/gated-recurrent-unit
+\bibitem{b18}“Gated Recurrent Unit Networks”, GeekforGeeks, Mar. 02, 2023 https://www.geeksforgeeks.org/gated-recurrent-unit-networks/
+\end{thebibliography}
+%%%%%%%%%%%%%%%
+
+
+\EOD
+
+\end{document}
