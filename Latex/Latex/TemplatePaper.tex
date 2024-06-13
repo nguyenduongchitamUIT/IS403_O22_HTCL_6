@@ -475,11 +475,11 @@ Where:
       \cline{2-5}
      & 5 - 3 & 13491.37 & 12129.8 & 17.56\% \\
     \hline
-      \multirow{3}{*}{LR} & 7 - 2 & 7715.85 & 6647.42 & 8.72 \%\\
+      \multirow{3}{*}{LR} & 7 - 2 & 8244.48 & 7045.66 & 9.68 \%\\
       \cline{2-5}
-     & 6 - 3 & 6246.93 & 5097.51 & 7.12\% \\
+     & 6 - 3 & 6866.90 & 5308.43 & 7.84\% \\
       \cline{2-5}
-     & 5 - 3 & 7379.90 & 5773.86 & 8.04\% \\
+     & 5 - 3 & 9197.84 & 7524.87 & 11.00\% \\
     \hline
      \multirow{3}{*}{Random Forest} & 7 - 2 & 4496.05 & 3457.56 & 5.05 \%\\
       \cline{2-5}
@@ -505,6 +505,12 @@ Where:
       \cline{2-5}
      & 5 - 3 & 3137.73 & 2643.86 & 3.9\% \\
      \hline
+     \multirow{3}{*}{N-HiTS} & 7 - 2 & 5535.98 & 4364.94 & 5.86 \%\\
+      \cline{2-5}
+     & 6 - 3 & 4568.03 & 3526.34 & 4.72\% \\
+      \cline{2-5}
+     & 5 - 3 & 3149.69 & 2559.81 & 3.57\% \\
+     \hline
      \end{tabular}%
 }
 \end{table}
@@ -520,11 +526,11 @@ Where:
       \cline{2-5}
      & 5 - 3 & 59813.26 & 51293.43 & 60.37\% \\
     \hline
-      \multirow{3}{*}{LR} & 7 - 2 & 58488.38 & 57662.72 & 33.55 \%\\
+      \multirow{3}{*}{LR} & 7 - 2 & 19701.33 & 17627.21 & 22.77 \%\\
       \cline{2-5}
-     & 6 - 3 & 76623.36 & 72857.47 & 42.77\% \\
+     & 6 - 3 & 21272.07 & 14620.36 & 18.45\% \\
       \cline{2-5}
-     & 5 - 3 & 77926.55 & 69197.92 & 40.18\% \\
+     & 5 - 3 & 25518.80 & 21919.88 & 20.64\% \\
     \hline
        \multirow{3}{*}{Random Forest} & 7 - 2 & 11547.33 & 9101.4 & 12.5 \%\\
       \cline{2-5}
@@ -550,6 +556,12 @@ Where:
       \cline{2-5}
      & 5 - 3 & 17293.56 & 14977.94 & 17.92\% \\
      \hline
+     \multirow{3}{*}{N-HiTS} & 7 - 2 & 5286.90 & 4250.03 & 6.38 \%\\
+      \cline{2-5}
+     & 6 - 3 & 6072.93 & 5262.99 & 7.37\% \\
+      \cline{2-5}
+     & 5 - 3 & 7846.00 & 6810.08 & 7.57\% \\
+     \hline
      \end{tabular} %
      }
 \subsection{MSN}
@@ -564,11 +576,11 @@ Where:
       \cline{2-5}
      & 5 - 3 & 83643.45 & 68675.86 & 74.87\% \\
     \hline
-      \multirow{3}{*}{LR} & 7 - 2 & 40688.19 & 38391.40 & 47.41 \%\\
+      \multirow{3}{*}{LR} & 7 - 2 & 42749.95 & 40337.08 & 52.45 \%\\
       \cline{2-5}
-     & 6 - 3 & 32367.83 & 26797.35 & 32.30\% \\
+     & 6 - 3 & 40584.33 & 34234.69 & 43.69\% \\
       \cline{2-5}
-     & 5 - 3 & 36756.58 & 32791.40 & 28.26\% \\
+     & 5 - 3 & 28972.10 & 24397.19 & 21.45\% \\
     \hline
          \multirow{3}{*}{Random Forest} & 7 - 2 & 10697.52 & 9097.3 & 11.73 \%\\
       \cline{2-5}
@@ -593,6 +605,12 @@ Where:
      & 6 - 3 & 3204.45 & 2456.7 & 2.51\% \\
       \cline{2-5}
      & 5 - 3 & 3204.45 & 2456.7 & 2.52\% \\
+     \hline
+     \multirow{3}{*}{N-HiTS} & 7 - 2 & 11270.62 & 8582.71 & 12.58 \%\\
+      \cline{2-5}
+     & 6 - 3 & 12348.99 & 9271.95 & 13.65\% \\
+      \cline{2-5}
+     & 5 - 3 & 21586.76 & 18050.51 & 22.97\% \\
      \hline
      \end{tabular} %
      }
@@ -973,6 +991,70 @@ Where:
     \centering
     \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 6-3-1.png }
     \caption{LSTM model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 7-2-1.png}
+    \caption{N-HiTS model’s result for VNM with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 6-3-1.png }
+    \caption{N-HiTS model’s result for VNM with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 5-3-2.png}
+    \caption{N-HiTS model’s result for VNM with the rate of 5-3-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 7-2-1.png }
+    \caption{N-HiTS model’s result for SAB with the rate of 7-2-1}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 6-3-1.png}
+    \caption{N-HiTS model’s result for SAB with the rate of 6-3-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 5-3-2.png }
+    \caption{N-HiTS model’s result for SAB with the rate of 5-3-2}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 7-2-1.png}
+    \caption{N-HiTS model’s result for MSN with the rate of 7-2-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 6-3-1.png }
+    \caption{N-HiTS model’s result for MSN with the rate of 6-3-1}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 5-3-2.png}
+    \caption{N-HiTS model’s result for MSN with the rate of 5-3-2}
     \end{minipage}
     \end{figure}
    
