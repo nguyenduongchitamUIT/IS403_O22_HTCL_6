@@ -10,6 +10,8 @@
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{breqn}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -33,7 +35,7 @@
 \end{abstract}
 
 \begin{keywords}
-\\Stock price forecasting, autoregressive adjusted model output statistics (AR-MOS), Random Forest, Neural Hierarchical Interpolation for Time Series Forecasting (N-HiTS), Time series analysis, Predictive analytics.
+\\Stock price forecasting, autoregressive adjusted model output statistics (AR-MOS),  Linear Regression, ARIMA, RNN, GRU, LSTM, Random Forest, Neural Hierarchical Interpolation for Time Series Forecasting (N-HiTS), Time series analysis, Predictive analytics.
 \end{keywords}
 
 \titlepgskip=-15pt
@@ -170,11 +172,39 @@ AR-MOS (Auto-Regressive Model Output Statistics) is a method that combines the a
 Autoregressive models (AR) belong to time series models. These models capture the relationship between an observation and several lagged observations (previous time steps). The core idea is that the current value of a time series can be expressed as a linear combination of its past values, with some random noise.[9]
 
 Mathematically, an autoregressive model of order p, denoted as AR(p), can be expressed as:
-\[ Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} +...+ \phi_p Y_{t-p} + \epsilon_t\]
+\begin{dmath*}
+ Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} +...+ \phi_p Y_{t-p} + \epsilon_t 
+ \end{dmath*}
+
 Which t is the time series so \(Y_t\) is the value of the time series at time t; p is used to calculate the number of orders of previous values; \(\phi\) is the autoregressive coefficients; \(\epsilon_t\) is the error term.
 
-Model Output Statistics (MOS) is a method for improving weather forecasts by combining information from numerical weather prediction models with actual observational data. MOS uses linear regression analysis to adjust predictions from the model. This method determines the relationship between forecasts from models (biased forecasts) and actual monitoring data (Nature solution).
+Model Output Statistics (MOS) is a method for improving weather forecasts by combining information from numerical weather prediction models with actual observational data. 
+AR-adjusted forecast ensemble obtained via : 
 
+\[\widetilde{x_i}(t) := x_i(t) + \widehat{r_i}(t) = x_i(t) + \eta_i + \sum_{j=1}^{p_k} \tau_{k,j} ( \widehat{r_i}(t - j) - \eta_k)
+\]
+With \(\eta_k, \tau_{k,j} \in \mathbb{R}\), \(j = 1, \ldots, p_k\) AR(\(p_i\)) coefficients, \(\widehat{r_i}(t)\),
+\(i = 1, \ldots, m\) residuals obtained from \(y(t - j)\).
+
+Predictive mean (location) estimated via
+\[
+\mu(t) := \frac{1}{m} \sum_{k=1}^{m} \widetilde{x_i}(t),
+\]
+
+Predictive variance (scale) via
+\[
+\sigma(t) := \omega \sigma_1(t) + (1 - \omega) \sigma_2(t).
+\]
+
+\(\sigma_1(t)\) is defined as:
+\[
+\sigma_1(t) := \sqrt{\frac{1}{m} \sum_{k=1}^{m} \gamma_k^2(t)},
+\]
+where \(\gamma_k^2(t)\) is the empirical variance of the AR(\(p_k\)) process.
+
+\(\sigma_2(t)\) is the empirical standard deviation of the AR-adjusted forecasts \(\widetilde{x_i}(t)\),
+
+\(\omega \in [0, 1]\) is a weight obtained by minimizing the Continuous Ranked Probability Score (CRPS) of the predictive Gaussian distribution. [19]
 
 \subsection{Random Forest}
 Random Forest is a supervised machine learning algorithm that is used for both classification and regression problems. In classification tasks, the algorithm uses the mode of the predictions of the individual trees to make the final prediction. In regression tasks, the algorithm uses the mean of the predictions of the individual trees. 
@@ -465,181 +495,207 @@ Where:
     \begin{table}[h]
 \centering
 \resizebox{0.5\textwidth}{!}{%
-\begin{tabular}{|c|c|c|c|c|c|}
-     \hline
-       Model & Train - Test -Val  & RMSE & MAE & MAPE \\ 
-     \hline
-      \multirow{3}{*}{ARIMA} & 7 - 2 & 4567.68 & 3523.22 & 5.15 \%\\
-      \cline{2-5}
-     & 6 - 3 & 5553.86 & 4602.56 & 6.42\% \\
-      \cline{2-5}
-     & 5 - 3 & 13491.37 & 12129.8 & 17.56\% \\
+\begin{tabular}{|c|c|c|c|c|}
     \hline
-      \multirow{3}{*}{LR} & 7 - 2 & 8244.48 & 7045.66 & 9.68 \%\\
-      \cline{2-5}
-     & 6 - 3 & 6866.90 & 5308.43 & 7.84\% \\
-      \cline{2-5}
-     & 5 - 3 & 9197.84 & 7524.87 & 11.00\% \\
+    \rowcolor{red!20} 
+    \textbf{Model} & \textbf{Train - Test} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE} \\ 
     \hline
-     \multirow{3}{*}{Random Forest} & 7 - 2 & 4496.05 & 3457.56 & 5.05 \%\\
-      \cline{2-5}
-     & 6 - 3 & 5062.85 & 4166.33 & 5.85\% \\
-      \cline{2-5}
-     & 5 - 3 & 13291.06 & 11912.84 & 17.25\% \\
-     \hline
-     \multirow{3}{*}{RNN} & 7 - 2 & 1313.34 & 1007.76 & 1.44 \%\\
-      \cline{2-5}
-     & 6 - 3 & 1987.74 &  1562 & 2.23\% \\
-      \cline{2-5}
-     & 5 - 3 & 1832.91 & 1489.43 & 2.17\% \\
+    \multirow{3}{*}{ARIMA} & 7 - 3 & 5142.76 & 4317.65 & 6.38 \%\\
+    \cline{2-5}
+    & 8 - 2 & 4422.28 & 3186.73 & 4.47\% \\
+    \cline{2-5}
+    & \textbf{9 - 1 }&  \textbf{2131.86} & \textbf{1888.54} & \textbf{2.83 }\% \\
     \hline
-    \multirow{3}{*}{GRU} & 7 - 2 & 967.05 & 736.34 & 1.06 \%\\
-      \cline{2-5}
-     & 6 - 3 & 1100.85 & 865.48 & 1.23\% \\
-      \cline{2-5}
-     & 5 - 3 & 1446.24 & 1142.44 & 1.67\% \\
-     \hline
-     \multirow{3}{*}{LSTM} & 7 - 2 & 1080 & 856.37 & 1.23 \%\\
-      \cline{2-5}
-     & 6 - 3 & 1765.26 & 1430.13 & 2.02\% \\
-      \cline{2-5}
-     & 5 - 3 & 3137.73 & 2643.86 & 3.9\% \\
-     \hline
-     \multirow{3}{*}{N-HiTS} & 7 - 2 & 5535.98 & 4364.94 & 5.86 \%\\
-      \cline{2-5}
-     & 6 - 3 & 4568.03 & 3526.34 & 4.72\% \\
-      \cline{2-5}
-     & 5 - 3 & 3149.69 & 2559.81 & 3.57\% \\
-     \hline
-     \end{tabular}%
+    \multirow{3}{*}{LR} & 7 - 3 & 9306.12 & 8345.64 & 11.86 \%\\
+    \cline{2-5}
+    & 8 - 2 & 7934.74 & 7278.31 & 10.46\% \\
+    \cline{2-5}
+    & \textbf{9 - 1} & \textbf{5528.21} & \textbf{5191.77} & \textbf{7.67}\% \\
+    \hline
+    \multirow{3}{*}{Random Forest} & 7 - 3 & 5037.99 & 4219.43 & 6.24 \%\\
+    \cline{2-5}
+    & 8 - 2 & 4501.74 & 3273.07 & 4.59\% \\
+    \cline{2-5}
+    & \textbf{9 - 1} & \textbf{2192.07} & \textbf{1952.69} & \textbf{2.93}\% \\
+    \hline
+    \multirow{3}{*}{RNN} & 7 - 3 & 1115.36 & 934.08 & 1.37 \%\\
+    \cline{2-5}
+    & \textbf{8 - 2} & \textbf{945.01} &  \textbf{723.96} & \textbf{1.07}\% \\
+    \cline{2-5}
+    & 9 - 1 & 1086.61 & 903.13 & 1.37\% \\
+    \hline
+    \multirow{3}{*}{GRU} & 7 - 3 & 977.76 & 770.05 & 1.13\%\\
+    \cline{2-5}
+    & \textbf{8 - 2} & \textbf{826.06} & \textbf{610.95} & \textbf{0.9}\% \\
+    \cline{2-5}
+    & 9 - 1 & 737.1 & 601.2 & 0.91\% \\
+    \hline
+    \multirow{3}{*}{LSTM} & 7 - 3 & 1238.38 & 970.47 & 1.42 \%\\
+    \cline{2-5}
+    & \textbf{8 - 2} & \textbf{880.63} & \textbf{646.22} & \textbf{0.95}\% \\
+    \cline{2-5}
+    & 9 - 1 & 823.88 & 678.14 & 1.03\% \\
+    \hline
+    \multirow{3}{*}{N-HiTS} & 7 - 3 & 2330.46 & 1759.26 & 2.55 \%\\
+    \cline{2-5}
+    & \textbf{8 - 2} & \textbf{2095.59 }& \textbf{1502.00} & \textbf{2.18}\% \\
+    \cline{2-5}
+    & 9 - 1 & 2261.62 & 1674.35 & 2.43\% \\
+    \hline
+    \multirow{3}{*}{AR-MOS} & 7 - 3 & 10177.71 & 8990.69 & 13.27 \%\\
+    \cline{2-5}
+    & 8 - 2 & 4836.85 & 4259.13 & 6.22\% \\
+    \cline{2-5}
+    &\textbf{ 9 - 1 }& \textbf{4020.65 }& \textbf{3404.02 }& \textbf{5.12}\% \\
+    \hline
+\end{tabular}%
 }
 \end{table}
+Based on the VNM dataset divided into train - test (7-3,8-2 and 9-1) in 8 models, we can see that the GRU model has the best prediction.
 \subsection{SAB}
 \resizebox{0.5\textwidth}{!}{%
-    \begin{tabular}{|c|c|c|c|c|c|c}
+   \begin{tabular}{|c|c|c|c|c|c|c|}
      \hline
-       Model & Train - Test & RMSE & MAE & MAPE \\ 
+     \rowcolor{red!20}
+        \textbf{Model} & \textbf{Train - Test}  & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE} \\ 
      \hline
-      \multirow{3}{*}{ARIMA} & 7 - 2 & 11421.0 & 8992.58 & 12.35 \%\\
+      \multirow{3}{*}{ARIMA} & 7 - 3 & 19230.53 & 15671.6 & 24.77 \%\\
       \cline{2-5}
-     & 6 - 3 & 9760.57 & 7945.13 & 9.57\% \\
+     & 8 - 2 & 15338.05 & 12838.62 & 21.36\% \\
       \cline{2-5}
-     & 5 - 3 & 59813.26 & 51293.43 & 60.37\% \\
+     & \textbf{9 - 1} & \textbf{4225.89} & \textbf{3554.24} & \textbf{6.22}\% \\
     \hline
-      \multirow{3}{*}{LR} & 7 - 2 & 19701.33 & 17627.21 & 22.77 \%\\
+      \multirow{3}{*}{LR} & 7 - 3 & 25626.47 & 23112.90 & 34.58 \%\\
       \cline{2-5}
-     & 6 - 3 & 21272.07 & 14620.36 & 18.45\% \\
+     & 8 - 2 & 23326.41 & 22220.45 & 34.97\% \\
       \cline{2-5}
-     & 5 - 3 & 25518.80 & 21919.88 & 20.64\% \\
+     & \textbf{9 - 1} & \textbf{19936.54} & \textbf{19260.65} & \textbf{32.91}\% \\
     \hline
-       \multirow{3}{*}{Random Forest} & 7 - 2 & 11547.33 & 9101.4 & 12.5 \%\\
+     \multirow{3}{*}{Random Forest} & 7 - 3 & 19373.5 & 15805.76 & 24.97 \%\\
       \cline{2-5}
-     & 6 - 3 & 8350.02 & 6902.82 & 8.59\% \\
+     & 8 - 2 & 15497.91 & 13018.04 & 21.64\% \\
       \cline{2-5}
-     & 5 - 3 & 59647.52 & 51139.46 & 60.2\% \\
+     & \textbf{9 - 1} & \textbf{4227.39} & \textbf{3555.76} & \textbf{6.22}\% \\
      \hline
-       \multirow{3}{*}{RNN} & 7 - 2 & 1527.85 & 1096.75 & 1.51 \%\\
+     \multirow{3}{*}{RNN} & \textbf{7 - 3} & \textbf{1088.79} & \textbf{787.37} & \textbf{1.18} \%\\
       \cline{2-5}
-     & 6 - 3 & 8592.45 & 8221.18 & 10.53\% \\
+     & 8 - 2 & 1696.68 &  1385.48 & 2.32\% \\
       \cline{2-5}
-     & 5 - 3 & 10958.33 & 9373.41 & 11.16\% \\
+     & 9 - 1 & 1132.65 & 872.82 & 1.53\% \\
     \hline
-    \multirow{3}{*}{GRU} & 7 - 2 & 2162.37 & 1769.17 & 2.43 \%\\
+    \multirow{3}{*}{GRU} & 7 - 3 & 1658.03 & 1299.64 & 1.98 \%\\
       \cline{2-5}
-     & 6 - 3 & 4538.3 & 4201.76 & 5.4\% \\
+     & 8 - 2 & 1397.82 & 1025.8 & 1.72\% \\
       \cline{2-5}
-     & 5 - 3 & 6470.74 & 3282.86 & 3.88\% \\
+     & \textbf{9 - 1} & \textbf{1053.29} & \textbf{829.7}& \textbf{1.45}\% \\
      \hline
-     \multirow{3}{*}{LSTM} & 7 - 2 & 2233.32 & 1680.49 & 2.31 \%\\
+     \multirow{3}{*}{LSTM} & \textbf{7 - 3} & \textbf{2127.75} & \textbf{1644.73} & \textbf{2.47} \%\\
       \cline{2-5}
-     & 6 - 3 & 13377.76 & 13118.63 & 16.68\% \\
+     & 8 - 2 & 2311.27 & 1808.84 & 3.02\% \\
       \cline{2-5}
-     & 5 - 3 & 17293.56 & 14977.94 & 17.92\% \\
+     & 9 - 1 & 2497.91 & 2161.99 & 3.76\% \\
      \hline
-     \multirow{3}{*}{N-HiTS} & 7 - 2 & 5286.90 & 4250.03 & 6.38 \%\\
+     \multirow{3}{*}{N-HiTS} & \textbf{7 - 3} & \textbf{3015.43} & \textbf{2545.39} & \textbf{4.51} \%\\
       \cline{2-5}
-     & 6 - 3 & 6072.93 & 5262.99 & 7.37\% \\
+     & 8 - 2 & 3036.10 & 2588.66 & 4.59\% \\
       \cline{2-5}
-     & 5 - 3 & 7846.00 & 6810.08 & 7.57\% \\
+     & 9 - 1 & 3502.49 & 3045.01 & 5.39\% \\
+       \hline
+     \multirow{3}{*}{AR-MOS} & 7 - 3 & 29301.53 & 24257.74 & 38.11 \%\\
+      \cline{2-5}
+     & 8 - 2 & 20362.23 & 17228.47 & 28.58\% \\
+      \cline{2-5}
+     & \textbf{9 - 1} & \textbf{5656.46} & \textbf{4841.45} & \textbf{8.45}\% \\
      \hline
-     \end{tabular} %
+     \end{tabular}%
      }
+     
+     \\ Based on the SAB dataset divided into train - test (7-3, 8-2 and 9-1) in 8 models, we can see that the RNN model has the best prediction.
 \subsection{MSN}
+
 \resizebox{0.5\textwidth}{!}{%
     \begin{tabular}{|c|c|c|c|c|c|c|}
      \hline
-       Model & Train - Test & RMSE & MAE & MAPE \\ 
+     \rowcolor{red!20}
+       \textbf{Model} & \textbf{Train - Test}  & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE} \\ 
      \hline
-      \multirow{3}{*}{ARIMA} & 7 - 2 & 10976.7 & 9401.92 & 12.2 \%\\
+      \multirow{3}{*}{ARIMA} & 7 - 3 & 13291.52 & 11674.73 & 16.14 \%\\
       \cline{2-5}
-     & 6 - 3 & 30088.22 & 26015.13 & 32.98\% \\
+     & 8 - 2 & 6898.68 & 5790.18 & 8.19\% \\
       \cline{2-5}
-     & 5 - 3 & 83643.45 & 68675.86 & 74.87\% \\
+     & \textbf{9 - 1 }& \textbf{7405.47} & \textbf{5798.65} & \textbf{7.94}\% \\
     \hline
-      \multirow{3}{*}{LR} & 7 - 2 & 42749.95 & 40337.08 & 52.45 \%\\
+      \multirow{3}{*}{LR} & 7 - 3 & 51280.86 & 48549.36 & 66.47 \%\\
       \cline{2-5}
-     & 6 - 3 & 40584.33 & 34234.69 & 43.69\% \\
+     & 8 - 2 & 42095.85 & 41200.62 & 58.46\% \\
       \cline{2-5}
-     & 5 - 3 & 28972.10 & 24397.19 & 21.45\% \\
+     & \textbf{9 - 1} & \textbf{31812.22} & \textbf{31498.50} & \textbf{46.09}\% \\
     \hline
-         \multirow{3}{*}{Random Forest} & 7 - 2 & 10697.52 & 9097.3 & 11.73 \%\\
+     \multirow{3}{*}{Random Forest} & 7 - 3 & 12807.81 & 11199.82 & 15.44 \%\\
       \cline{2-5}
-     & 6 - 3 & 32780.34 & 28999.39 & 36.45\% \\
+     & 8 - 2 & 6948.47 & 5820.15 & 8.27\% \\
       \cline{2-5}
-     & 5 - 3 & 23198.72 & 18244.89 & 20.16\% \\
+     & \textbf{9 - 1} & \textbf{6973.04} & \textbf{5355.6} & \textbf{7.33}\% \\
      \hline
-         \multirow{3}{*}{RNN} & 7 - 2 & 1611.08 & 1236.45 & 1.66 \%\\
+     \multirow{3}{*}{RNN} & 7 - 3 & 1830.66 & 1433.74 & 2.00 \%\\
       \cline{2-5}
-     & 6 - 3 & 3103.76 & 2316.24 &  2.84\% \\
+     & 8 - 2 & 1814.29 &  1383.41 & 2.03\% \\
       \cline{2-5}
-     & 5 - 3 & 3348.73 &  2474.61 & 2.56\% \\
+     & \textbf{9 - 1} & \textbf{1619.01} & \textbf{1301.06} & \textbf{1.83}\% \\
     \hline
-     \multirow{3}{*}{GRU} & 7 - 2 & 1757.09 & 1300.42 & 1.78 \%\\
+    \multirow{3}{*}{GRU} & \textbf{7 - 3} & \textbf{1666.65} & \textbf{1245.97} & \textbf{1.74 }\%\\
       \cline{2-5}
-     & 6 - 3 & 1702.32 & 1820.92 & 2.22\% \\
+     & 8 - 2 & 1652.33 & 1248.06 & 1.83\% \\
       \cline{2-5}
-     & 5 - 3 & 2900.89 & 2137.98 & 2.19\% \\
+     & 9 - 1 & 1617.84 & 1328.49 & 1.85\% \\
      \hline
-     \multirow{3}{*}{LSTM} & 7 - 2 & 2300.41 & 1747.18 & 2.38 \%\\
+     \multirow{3}{*}{LSTM} & 7 - 3 & 2885.91 & 2380.93 & 3.31 \%\\
       \cline{2-5}
-     & 6 - 3 & 3204.45 & 2456.7 & 2.51\% \\
+     & 8 - 2 & 1774.21 & 1315.41 & 1.93\% \\
       \cline{2-5}
-     & 5 - 3 & 3204.45 & 2456.7 & 2.52\% \\
+     & \textbf{9 - 1} & \textbf{1449.96} & \textbf{1179.24} & \textbf{1.65}\% \\
      \hline
-     \multirow{3}{*}{N-HiTS} & 7 - 2 & 11270.62 & 8582.71 & 12.58 \%\\
+     \multirow{3}{*}{N-HiTS} & \textbf{7 - 3} & \textbf{5295.94} & \textbf{4145.69} & \textbf{5.55} \%\\
       \cline{2-5}
-     & 6 - 3 & 12348.99 & 9271.95 & 13.65\% \\
+     & 8 - 2 & 6820.29 & 5450.65 & 7.29\% \\
       \cline{2-5}
-     & 5 - 3 & 21586.76 & 18050.51 & 22.97\% \\
+     & 9 - 1 & 7422.50 & 5974.11 & 7.99\% \\
+       \hline
+     \multirow{3}{*}{AR-MOS} & 7 - 3 & 12985.62 & 11387.46 & 15.77 \%\\
+      \cline{2-5}
+     & 8 - 2 & 7671.23 & 6350.45 & 9.1\% \\
+      \cline{2-5}
+     & \textbf{9 - 1} & \textbf{5601.88} & \textbf{4134.57} & \textbf{5.65}\% \\
      \hline
-     \end{tabular} %
+     \end{tabular}%
      }
-
+     
+     \\ Based on the MSN dataset divided into train - test (7-3,8-2 and 9-1) in 8 models, we can see that the LSTM model has the best prediction.
     \begin{figure}[H]
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 7-2-1.png}
-    \caption{ARIMA model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 7-3.png}
+    \caption{ARIMA model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 6-3-1.png}
-    \caption{ARIMA model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 8-2.png}
+    \caption{ARIMA model’s result for VNM with the rate of 8-2}
     \end{minipage}
 \end{figure}
 \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 5-3-2.png}
-    \caption{ARIMA model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for VNM with the rate of 9-1.png}
+    \caption{ARIMA model’s result for VNM with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 7-2-1.png}
-    \caption{ARIMA model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 7-3.png}
+    \caption{ARIMA model’s result for SAB with the rate of 7-3}
 
     \end{minipage}
    \end{figure}
@@ -648,27 +704,27 @@ Where:
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 6-3-1.png}
-    \caption{ARIMA model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 8-2.png}
+    \caption{ARIMA model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 5-3-2.png}
-    \caption{ARIMA model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for SAB with the rate of 9-1.png}
+    \caption{ARIMA model’s result for SAB with the rate of 9-1}
     \end{minipage}
     \end{figure}
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 7-2-1.png}
-    \caption{ARIMA model’s result for MSN with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 7-3.png}
+    \caption{ARIMA model’s result for MSN with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 6-3-1.png}
-    \caption{ARIMA model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 8-2.png}
+    \caption{ARIMA model’s result for MSN with the rate of 8-2}
     \end{minipage}
    \end{figure}
 
@@ -676,27 +732,27 @@ Where:
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 5-3-2.png}
-    \caption{ARIMA model’s result for MSN with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{ARIMA model’s result for MSN with the rate of 9-1.png}
+    \caption{ARIMA model’s result for MSN with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 7-2-1.png}
-    \caption{LR model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 7-3.png}
+    \caption{LR model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \end{figure}
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 6-3-1.png}
-    \caption{LR model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 8-2.png}
+    \caption{LR model’s result for VNM with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 5-3-2.png}
-    \caption{LR model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for VNM with the rate of 9-1.png}
+    \caption{LR model’s result for VNM with the rate of 9-1}
     \end{minipage}
    \end{figure}
    
@@ -704,28 +760,28 @@ Where:
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 7-2-1.png}
-    \caption{LR model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 7-3.png}
+    \caption{LR model’s result for SAB with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 6-3-1.png}
-    \caption{LR model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 8-2.png}
+    \caption{LR model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \end{figure}
     
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 5-3-2.png}
-    \caption{LR model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for SAB with the rate of 9-1.png}
+    \caption{LR model’s result for SAB with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 7-2-1.png}
-    \caption{LR model’s result for MSN with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 7-3.png}
+    \caption{LR model’s result for MSN with the rate of 7-3}
     \end{minipage}
    \end{figure}
 
@@ -733,40 +789,40 @@ Where:
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 6-3-1.png}
-    \caption{LR model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 8-2.png}
+    \caption{LR model’s result for MSN with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 5-3-2.png}
-    \caption{LR model’s result for MSN with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{LR model’s result for MSN with the rate of 9-1.png}
+    \caption{LR model’s result for MSN with the rate of 9-1}
     \end{minipage}
      \end{figure}
   \begin{figure}[H]
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 7-2-1.png}
-    \caption{Random Forest model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 7-3.png}
+    \caption{Random Forest model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 6-3-1.png}
-    \caption{Random Forest model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 8-2.png}
+    \caption{Random Forest model’s result for VNM with the rate of 8-2}
     \end{minipage}
 
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 5-3-2.png}
-    \caption{Random Forest model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for VNM with the rate of 9-1.png}
+    \caption{Random Forest model’s result for VNM with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 7-2-1.png}
-    \caption{Random Forest model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 7-3.png}
+    \caption{Random Forest model’s result for SAB with the rate of 7-3}
     \end{minipage}
    \end{figure}
 
@@ -774,26 +830,26 @@ Where:
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 6-3-1.png}
-    \caption{Random Forest model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 8-2.png}
+    \caption{Random Forest model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 5-3-2.png}
-    \caption{Random Forest model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for SAB with the rate of 9-1.png}
+    \caption{Random Forest model’s result for SAB with the rate of 9-1}
     \end{minipage}
 
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 7-2-1.png}
-    \caption{Random Forest model’s result for MSN with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 7-3.png}
+    \caption{Random Forest model’s result for MSN with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 6-3-1.png}
-    \caption{Random Forest model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 8-2.png}
+    \caption{Random Forest model’s result for MSN with the rate of 8-2}
     \end{minipage}
    \end{figure}
 
@@ -801,82 +857,82 @@ Where:
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 5-3-2.png}
-    \caption{Random Forest model’s result for MSN with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{Random Forest model’s result for MSN with the rate of 9-1.png}
+    \caption{Random Forest model’s result for MSN with the rate of 9-1}
     \end{minipage}
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 7-2-1.png }
-    \caption{RNN model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 7-3.png }
+    \caption{RNN model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 6-3-1.png }
-    \caption{RNN model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 8-2.png }
+    \caption{RNN model’s result for VNM with the rate of 8-2}
     \end{minipage}
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 5-3-2.png }
-    \caption{RNN model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for VNM with the rate of 9-1.png }
+    \caption{RNN model’s result for VNM with the rate of 9-1}
     \end{minipage}
     \end{figure}
     
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 7-2-1.png }
-    \caption{RNN model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 7-3.png }
+    \caption{RNN model’s result for SAB with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 6-3-1.png }
-    \caption{RNN model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 8-2.png }
+    \caption{RNN model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \end{figure}
     
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 5-3-2.png }
-    \caption{RNN model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for SAB with the rate of 9-1.png }
+    \caption{RNN model’s result for SAB with the rate of 9-1}
     \end{minipage}
      \hfill
      \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 7-2-1.png  }
-    \caption{RNN model’s result for MSN  with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 7-3.png  }
+    \caption{RNN model’s result for MSN  with the rate of 7-3}
     \end{minipage}
      \end{figure}
      
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 6-3-1.png }
-    \caption{RNN model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 8-2.png }
+    \caption{RNN model’s result for MSN with the rate of 8-2}
     \end{minipage}
      \hfill
      \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 5-3-2.png  }
-    \caption{RNN model’s result for MSN  with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{RNN model’s result for MSN with the rate of 9-1.png  }
+    \caption{RNN model’s result for MSN  with the rate of 9-1}
     \end{minipage}
 \end{figure}
 
    \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 7-2-1.png}
-    \caption{GRU model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 7-3.png}
+    \caption{GRU model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 6-3-1.png}
-    \caption{GRU model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 8-2.png}
+    \caption{GRU model’s result for VNM with the rate of 8-2}
     \end{minipage}
     \end{figure}
     
@@ -884,42 +940,42 @@ Where:
     
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 5-3-2.png}
-    \caption{GRU model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for VNM with the rate of 9-1.png}
+    \caption{GRU model’s result for VNM with the rate of 9-1}
     \end{minipage}   
    \hfill
     \centering
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 7-2-1.png}
-    \caption{GRU model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 7-3.png}
+    \caption{GRU model’s result for SAB with the rate of 7-3}
     \end{minipage}
      \end{figure}
      
      \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 6-3-1.png}
-    \caption{GRU model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 8-2.png}
+    \caption{GRU model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 5-3-2.png}
-    \caption{GRU model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for SAB with the rate of 9-1.png}
+    \caption{GRU model’s result for SAB with the rate of 9-1}
     \end{minipage}
     \end{figure}
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 7-2-1.png}
-    \caption{GRU model’s result for MSN with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 7-3.png}
+    \caption{GRU model’s result for MSN with the rate of 7-3}
     \end{minipage}   
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 6-3-1.png}
-    \caption{GRU model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 8-2.png}
+    \caption{GRU model’s result for MSN with the rate of 8-2}
     \end{minipage}
     \end{figure}
     
@@ -927,14 +983,14 @@ Where:
 
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 5-3-2.png}
-    \caption{GRU model’s result for MSN with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{GRU model’s result for MSN with the rate of 9-1.png}
+    \caption{GRU model’s result for MSN with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for MSN with the rate of 7-2-1.png}
-    \caption{LSTM model’s result for MSN with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for MSN with the rate of 7-3.png}
+    \caption{LSTM model’s result for MSN with the rate of 7-3}
     \end{minipage}
     \end{figure}
     
@@ -942,122 +998,189 @@ Where:
 
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for MSN with the rate of 5-3-2.png}
-    \caption{LSTM model’s result for MSN with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for MSN with the rate of 8-2.png}
+    \caption{LSTM model’s result for MSN with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for MSN with the rate of 6-3-1.png}
-    \caption{LSTM model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for MSN with the rate of 9-1.png}
+    \caption{LSTM model’s result for MSN with the rate of 9-1}
     \end{minipage}
     \end{figure}
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for SAB with the rate of 7-2-1.png}
-    \caption{LSTM model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for SAB with the rate of 7-3.png}
+    \caption{LSTM model’s result for SAB with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for SAB with the rate of 5-3-2.png}
-    \caption{LSTM model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for SAB with the rate of 8-2.png}
+    \caption{LSTM model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \end{figure}
     
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for SAB with the rate of 6-3-1.png}
-    \caption{LSTM model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for SAB with the rate of 9-1.png}
+    \caption{LSTM model’s result for SAB with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 7-2-1.png }
-    \caption{LSTM model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 7-3.png }
+    \caption{LSTM model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 5-3-2.png}
-    \caption{LSTM model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 8-2.png}
+    \caption{LSTM model’s result for VNM with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 6-3-1.png }
-    \caption{LSTM model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{LSTM model’s result for VNM with the rate of 9-1.png }
+    \caption{LSTM model’s result for VNM with the rate of 9-1}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 7-2-1.png}
-    \caption{N-HiTS model’s result for VNM with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 7-3.png}
+    \caption{N-HiTS model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 6-3-1.png }
-    \caption{N-HiTS model’s result for VNM with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 8-2.png }
+    \caption{N-HiTS model’s result for VNM with the rate of 8-2}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 5-3-2.png}
-    \caption{N-HiTS model’s result for VNM with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for VNM with the rate of 9-1.png}
+    \caption{N-HiTS model’s result for VNM with the rate of 9-1}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 7-2-1.png }
-    \caption{N-HiTS model’s result for SAB with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 7-3.png }
+    \caption{N-HiTS model’s result for SAB with the rate of 7-3}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 6-3-1.png}
-    \caption{N-HiTS model’s result for SAB with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 8-2.png}
+    \caption{N-HiTS model’s result for SAB with the rate of 8-2}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 5-3-2.png }
-    \caption{N-HiTS model’s result for SAB with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for SAB with the rate of 9-1.png }
+    \caption{N-HiTS model’s result for SAB with the rate of 9-1}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 7-2-1.png}
-    \caption{N-HiTS model’s result for MSN with the rate of 7-2-1}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 7-3.png}
+    \caption{N-HiTS model’s result for MSN with the rate of 7-3}
     \end{minipage}
     \hfill
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 6-3-1.png }
-    \caption{N-HiTS model’s result for MSN with the rate of 6-3-1}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 8-2.png }
+    \caption{N-HiTS model’s result for MSN with the rate of 8-2}
     \end{minipage}
     \end{figure}
 
     \begin{figure}[H]
     \begin{minipage}{0.23\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 5-3-2.png}
-    \caption{N-HiTS model’s result for MSN with the rate of 5-3-2}
+    \includegraphics[width=0.8\textwidth]{N-HiTS model’s result for MSN with the rate of 9-1.png}
+    \caption{N-HiTS model’s result for MSN with the rate of 9-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for VNM with the rate of 7-3.png }
+    \caption{AR-MOS model’s result for VNM with the rate of 7-3}
     \end{minipage}
     \end{figure}
-   
+    
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for VNM with the rate of 8-2.png}
+    \caption{AR-MOS model’s result for VNM with the rate of 8-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for VNM with the rate of 9-1.png }
+    \caption{AR-MOS model’s result for VNM with the rate of 9-1}
+    \end{minipage}
+    \end{figure}
+    
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for SAB with the rate of 7-3.png}
+    \caption{AR-MOS model’s result for SAB with the rate of 7-3}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for SAB with the rate of 8-2.png}
+    \caption{AR-MOS model’s result for SAB with the rate of 8-2}
+    \end{minipage}
+    \end{figure}
+    
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for SAB with the rate of 9-1.png}
+    \caption{AR-MOS model’s result for SAB with the rate of 9-1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for MSN with the rate of 7-3.png }
+    \caption{AR-MOS model’s result for MSN with the rate of 7-3}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for MSN with the rate of 8-2.png}
+    \caption{AR-MOS model’s result for MSN with the rate of 8-2}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.23\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{AR-MOS model’s result for MSN with the rate of 9-1.png }
+    \caption{AR-MOS model’s result for MSN with the rate of 9-1}
+    \end{minipage}
+    \end{figure}
+   \section{CONCLUSION}
+Among the eight algorithms (Linear Regression, ARIMA, RNN, GRU, LSTM, AR-MOS, Random Forest, N-HiTS), the results of this study show that the RNN, GRU, and LSTM models are the most suitable for predicting the stock prices of three corporations: VNM, SAB, and MSN. In contrast, other models (ARIMA, Linear Regression, Random Forest, N-HiTS, AR-MOS) did not perform as well This study emphasizes the necessity of employing multiple modeling approaches in financial analysis and highlights the potential of using RNN, GRU, and LSTM models for stock price prediction in the future. Further research on model tuning and optimization techniques could yield even better predictive performance. Continued innovation and research in this field are essential for developing more robust and accurate predictive tools.
+
+
+ \section{ACKNOWLEDGMENT}
+   Our team would like to express our deepest gratitude to \textbf{PhD. Nguyen Dinh Thuan}  and \textbf{Mr. Nguyen Minh Nhut}, whose guidance and support helped us successfully complete this project. Despite our best efforts to apply what we have learned, it is difficult to avoid mistakes entirely. Therefore, we look forward to receiving feedback from our instructors to improve and refine our work. This feedback will help us accumulate knowledge and experience, preparing us better for the future.
 %% UNCOMMENT these lines below (and remove the 2 commands above) if you want to embed the bibliografy.
 \begin{thebibliography}{00}
 \bibitem{b1} Avijeet Biswal, “Stock Market Prediction using Machine Learning in 2024”, Apr. 15, 2024
@@ -1084,6 +1207,10 @@ https://www.analyticsvidhya.com/blog/2021/06/understanding-random-forest/
 \bibitem{b16}https://www.analyticsvidhya.com/blog/2022/03/an-overview-on-long-short-term-memory-lstm/
 \bibitem{b17}“Gated Recurrent Unit,” DeepAI, May 17, 2019 https://deepai.org/machine-learning-glossary-and-terms/gated-recurrent-unit
 \bibitem{b18}“Gated Recurrent Unit Networks”, GeekforGeeks, Mar. 02, 2023 https://www.geeksforgeeks.org/gated-recurrent-unit-networks/
+\bibitem{b19} "Autoregressive Extensions of EMOS with
+Application to Surface Temperature Ensemble
+Postprocessing,19. April 2024.https://presentations.copernicus.org/EGU24/EGU24-4357_presentation.pdf"
+
 \end{thebibliography}
 %%%%%%%%%%%%%%%
 
