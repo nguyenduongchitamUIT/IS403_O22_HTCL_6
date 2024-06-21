@@ -44,14 +44,13 @@
 
 \section{Introduction}
 \label{sec:introduction}
- A stock market is a public market where you can buy and sell shares for publicly listed companies. The stocks represent ownership in the company. The stock exchange is the mediator that allows the buying and selling of shares. Stock Price Prediction using machine learning algorithm helps to discover the future value of company stock and other financial assets traded on an exchange. [1]\\
-Vietnam’s stock market has experienced significant growth in recent years. However, forecasting stock prices in this market remains a challenging due to the complexities of financial market. There are other factors involved in the prediction, such as physical and psychological factors, rational and irrational behavior, and so on. All these factors combine to make share prices dynamic and volatile. This makes it very difficult to predict stock prices with high accuracy [1]. In order to analyze and make predictions about financial data, particularly stock prices, machine learning techniques have become increasingly effective. \\
-In this study, we especially focus on applying machine learning algorithms to forecast stock values on three corporations in Vietnam: Vietnam Dairy Products JSC (VNM), Saigon Beer Alcohol Beverage Corp (SAB), Masan Group Corp (MSN). By employing machine learning such as Random Forest, AR-MOS, N-HiTS, …; this research seeks to enhance the accuracy and reliability of stock price prediction, enabling stakeholders in Vietnam's stock market to make well-informed investment decisions.\\
-
+ \indent A stock market is a public market where you can buy and sell shares for publicly listed companies. The stocks represent ownership in the company. The stock exchange is the mediator that allows the buying and selling of shares. Stock Price Prediction using machine learning algorithm helps to discover the future value of company stock and other financial assets traded on an exchange. [1]\\
+ \indent Vietnam’s stock market has experienced significant growth in recent years. However, forecasting stock prices in this market remains a challenging due to the complexities of financial market. There are other factors involved in the prediction, such as physical and psychological factors, rational and irrational behavior, and so on. All these factors combine to make share prices dynamic and volatile. This makes it very difficult to predict stock prices with high accuracy [1]. In order to analyze and make predictions about financial data, particularly stock prices, machine learning techniques have become increasingly effective. \\
+ \indent In this study, we especially focus on applying machine learning algorithms to forecast stock values on three corporations in Vietnam: Vietnam Dairy Products JSC (VNM), Saigon Beer Alcohol Beverage Corp (SAB), Masan Group Corp (MSN). By employing machine learning such as Random Forest, AR-MOS, N-HiTS, …; this research seeks to enhance the accuracy and reliability of stock price prediction, enabling stakeholders in Vietnam's stock market to make well-informed investment decisions.
 \section{Related Works}
-In recent years, there has been a substantial amount of research dedicated to predicting stock prices using various machine learning and statistical models.\\
-V. Gururaj, in a 2019 study [2], focused on stock market prediction employing Linear Regression and Support Vector Machines, demonstrating the application of these models in forecasting stock prices.\\
-Zhong and Enke in 2019. Predicting the daily return direction of the stock market using hybrid machine learning algorithms. For evaluating a classification model’s accuracy, recall, precision, and F-score, are commonly preferred metrics, and for regression or price forecasting models, root mean square error (RMSE) and mean absolute percentage error (MAPE) are often employed. Jose el at. in 2019 An Efficient System to Predict and Analyze Stock Data using Hadoop Techniques.\\
+\indent In recent years, there has been a substantial amount of research dedicated to predicting stock prices using various machine learning and statistical models.\\
+\indent V. Gururaj, in a 2019 study [2], focused on stock market prediction employing Linear Regression and Support Vector Machines, demonstrating the application of these models in forecasting stock prices.\\
+\indent Zhong and Enke in 2019. Predicting the daily return direction of the stock market using hybrid machine learning algorithms. For evaluating a classification model’s accuracy, recall, precision, and F-score, are commonly preferred metrics, and for regression or price forecasting models, root mean square error (RMSE) and mean absolute percentage error (MAPE) are often employed. Jose el at. in 2019 An Efficient System to Predict and Analyze Stock Data using Hadoop Techniques.
 
 \section{Materials}
 \subsection{Dataset}
@@ -131,7 +130,7 @@ to forecast close prices, only data relating to column “Price"
 
 \section{Methodology}
 \subsection{Arima}
-An autoregressive integrated moving average, or ARIMA, is a statistical analysis model that uses time series data to either better understand the data set or to predict future trends [3]. The ARIMA model incorporates three key elements from the Box-Jenkins method: Autoregressive (AR), Integrated (I) – uses differencing of raw observations to make the time series stationary, Moving Average (MA).
+\indent An autoregressive integrated moving average, or ARIMA, is a statistical analysis model that uses time series data to either better understand the data set or to predict future trends [3]. The ARIMA model incorporates three key elements from the Box-Jenkins method: Autoregressive (AR), Integrated (I) – uses differencing of raw observations to make the time series stationary, Moving Average (MA).
 
 [5][6] ARIMA model is classified as an ARIMA(p,d,q) model, where:
 \begin{itemize}
@@ -168,17 +167,17 @@ Where:
             \end{aligned}$        
 \end{itemize}
 \subsection{AR-MOS}
-AR-MOS (Auto-Regressive Model Output Statistics) is a method that combines the auto-regressive (AR) model and MOS (Model Output Statistics) to improve the accuracy of weather forecasts. By integrating these methods, AR-MOS corrects systematic errors in numerical weather prediction models and utilizes past forecast data to enhance the accuracy of future predictions. 
-Autoregressive models (AR) belong to time series models. These models capture the relationship between an observation and several lagged observations (previous time steps). The core idea is that the current value of a time series can be expressed as a linear combination of its past values, with some random noise.[9]
+\indent AR-MOS (Auto-Regressive Model Output Statistics) is a method that combines the auto-regressive (AR) model and MOS (Model Output Statistics) to improve the accuracy of weather forecasts. By integrating these methods, AR-MOS corrects systematic errors in numerical weather prediction models and utilizes past forecast data to enhance the accuracy of future predictions. 
+\indent Autoregressive models (AR) belong to time series models. These models capture the relationship between an observation and several lagged observations (previous time steps). The core idea is that the current value of a time series can be expressed as a linear combination of its past values, with some random noise.[9]
 
-Mathematically, an autoregressive model of order p, denoted as AR(p), can be expressed as:
+\indent Mathematically, an autoregressive model of order p, denoted as AR(p), can be expressed as:
 \begin{dmath*}
  Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} +...+ \phi_p Y_{t-p} + \epsilon_t 
  \end{dmath*}
 
 Which t is the time series so \(Y_t\) is the value of the time series at time t; p is used to calculate the number of orders of previous values; \(\phi\) is the autoregressive coefficients; \(\epsilon_t\) is the error term.
 
-Model Output Statistics (MOS) is a method for improving weather forecasts by combining information from numerical weather prediction models with actual observational data. 
+\indent Model Output Statistics (MOS) is a method for improving weather forecasts by combining information from numerical weather prediction models with actual observational data. 
 AR-adjusted forecast ensemble obtained via : 
 
 \[\widetilde{x_i}(t) := x_i(t) + \widehat{r_i}(t) = x_i(t) + \eta_i + \sum_{j=1}^{p_k} \tau_{k,j} ( \widehat{r_i}(t - j) - \eta_k)
@@ -207,9 +206,8 @@ where \(\gamma_k^2(t)\) is the empirical variance of the AR(\(p_k\)) process.
 \(\omega \in [0, 1]\) is a weight obtained by minimizing the Continuous Ranked Probability Score (CRPS) of the predictive Gaussian distribution. [19]
 
 \subsection{Random Forest}
-Random Forest is a supervised machine learning algorithm that is used for both classification and regression problems. In classification tasks, the algorithm uses the mode of the predictions of the individual trees to make the final prediction. In regression tasks, the algorithm uses the mean of the predictions of the individual trees. 
-Random forest algorithm combines the output from multiple decision trees to get a single result. It has three main hyperparameters, which need to be set before training. These include node size, the number of trees, and the number of features sampled. From there, the random forest classifier can be used to solve for regression or classification problems. [11] 
-
+\indent Random Forest is a popular machine learning algorithm that belongs to the supervised learning technique. It can be used for both Classification and Regression problems in machine learning. It is based on the concept of ensemble learning, which is a process of combining multiple classifiers to solve a complex problem and to improve the performance of the model [20].
+\indent Random forest algorithm combines the output from multiple decision trees to get a single result. It has three main hyperparameters, which need to be set before training. These include node size, the number of trees, and the number of features sampled. From there, the random forest classifier can be used to solve for regression or classification problems [11]. 
 
 \begin{figure}[H]
     \centering
@@ -218,7 +216,6 @@ Random forest algorithm combines the output from multiple decision trees to get 
         \includegraphics[width=1.0\textwidth]{Random Forest.png}
     \end{minipage}
 \end{figure}
-
 [10] The following steps explain the working Random Forest Algorithm:
 \begin{enumerate}
   \item Select random samples from the given data or training set.
@@ -226,9 +223,16 @@ Random forest algorithm combines the output from multiple decision trees to get 
   \item Each decision tree will generate an output.
   \item Finally, the output is considered based on Majority Voting/Averaging.
 \end{enumerate}
-
+\indent Random Forest can also be used in time series analysis and forecasting, both univariate and multivariate dataset by creating lag variables and seasonality variables manually. When evaluating the performance of a Random Forest model, metrics such as standard deviation, var, moving average, and linear regression can provide insights into its effectiveness [21]. To implement Random Forest for time series forecasting, we need to [22]:
+\begin{enumerate}
+  \item Data Preparation: Convert the data into a suitable format.
+  \item Data Splitting: Split into training and test sets. Ensure that the time order is preserved to avoid data leakage.
+  \item Model Building: Fit the Random Forest model to the training data.
+  \item Prediction: Make predictions using the trained model and evaluate its performance on the test set.
+  \item Model Evaluation and Visualization.
+\end{enumerate}
 \subsection{RNN}
-Recurrent Neural Network(RNN) is a type of Neural Network where the output from the previous step is fed as input to the current step. In traditional neural networks, all the inputs and outputs are independent of each other.[12] RNNs differ from traditional feedforward neural networks in that they maintain a "hidden state" which contains information about previous elements in the sequence. This hidden state is updated at each time step t based on the input at that time and the hidden state from the previous time step.
+\indent Recurrent Neural Network(RNN) is a type of Neural Network where the output from the previous step is fed as input to the current step. In traditional neural networks, all the inputs and outputs are independent of each other.[12] RNNs differ from traditional feedforward neural networks in that they maintain a "hidden state" which contains information about previous elements in the sequence. This hidden state is updated at each time step t based on the input at that time and the hidden state from the previous time step.
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.23\textwidth}
@@ -335,7 +339,7 @@ A Gated Recurrent Unit (GRU) is a type of recurrent neural network (RNN) archite
 GRU is to use gating mechanisms to selectively update the hidden state of the network at each time step. The gating mechanisms are used to control the flow of information in and out of the network. The GRU has two gating mechanisms, called the reset gate and the update gate. [18] The update gate determines how much of the past information needs to be passed along to the future. The reset gate decides how much of the past information to discard.
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.50\textwidth}
+    \begin{minipage}{0.30\textwidth}
     \centering
     \includegraphics[width=1\textwidth]{Gated Recurrent Unit’s architecture.png}
     \caption{Gated Recurrent Unit’s architecture}
@@ -349,7 +353,6 @@ The equations used to calculate the reset gate, update gate, and hidden state of
     \item \textbf{Candidate Hidden State:} \[h'_t = \tanh(W \cdot [r_t \cdot h_{t-1}, x_t] + b)\]
     \item \textbf{Final Hidden State:}  \[h_t = (1 - z_t) \cdot h_{t-1} + z_t \cdot h'_t\]
 \end{itemize}
-
 Where: 
 \begin{itemize}
     \item $\begin{aligned}[t]
@@ -369,26 +372,47 @@ Where:
 
 \subsection{N-HiTS}
 The Neural Hierarchical Interpolation for Time Series Forecasting (N-HiTS) is a deep learning algorithm designed for time series forecasting, addressing challenges in long-horizon predictions and capturing complex data patterns. It builds on concepts from the N-BEATS architecture, using local nonlinear projections onto basis functions through multiple blocks.
-
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.50\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{N-HiTS.png}
-    \caption{N-HiTS’s architecture}
+    \includegraphics[width=1\textwidth]{N-HiTS Model Input.png}
+    \caption{N-HiTS’s Model Input}
     \label{fig:1}
     \end{minipage}
+    \begin{minipage}{0.50\textwidth}
+    - Input Data is a Time Series \( y \) is divided into two parts: Backcast Period and Forecast Period.
+    \end{minipage}
 \end{figure}
-
-\textbf{Multi-Rate Signal Sampling:} Each block in the model uses a MaxPool layer with varying kernel sizes to analyze input components at different scales. Larger kernel sizes filter out high-frequency components, allowing the block to focus on long-term trends, which is crucial for long-horizon forecasting.
-
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.15\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{N-HiTS Stack Input.png}
+    \caption{N-HiTS’s Stack Input}
+    \label{fig:1}
+    \end{minipage}
+    \begin{minipage}{0.50\textwidth}
+    - Each stack consists of many blocks connected to each other. The input to each stack is the residual from the previous stack.
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.15\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{N-HiTS Block Input.png}
+    \caption{N-HiTS’s Block Input}
+    \label{fig:1}
+    \end{minipage}
+    \begin{minipage}{0.50\textwidth}
+    - Each block consists of multiple MLP (Multi-Layer Perceptron) layers. \par
+    \textbf{Multi-Rate Signal Sampling:} Each block in the model uses a MaxPool layer with varying kernel sizes to analyze input components at different scales. Larger kernel sizes filter out high-frequency components, allowing the block to focus on long-term trends, which is crucial for long-horizon forecasting.
 \begin{itemize}
     \item  \textbf{MaxPooling Operation:} 
-\end{itemize}
-\begin{equation}
+\[
 y_i^{(k)} = \max_{j \in \mathcal{W}_k} x_{i+j}
-\end{equation}
-Where: 
+\]
+Where:
 \begin{itemize}
     \item $\begin{aligned}[t]
             y_i^{(k)} & \text{ is the output after MaxPooling.} \\
@@ -400,39 +424,12 @@ Where:
             {W}_k & \text{ represents the window of size k.} \\
             \end{aligned}$
 \end{itemize}
-
-\textbf{Hierarchical Interpolation:} The algorithm performs hierarchical interpolation by dividing the prediction task across multiple blocks, each specializing in different frequencies and scales. This structure allows N-HiTS to manage the complexity of long-horizon forecasts without excessively increasing computational demands.
-
-\begin{itemize}
-    \item  \textbf{Block Output Composition:} 
 \end{itemize}
-\begin{equation}
-y_t = \sum_{i=1}^B f_i(x_t; \theta_i)
-\end{equation}
-Where: 
-\begin{itemize}
-    \item $\begin{aligned}[t]
-            y_t & \text{ is the output signal.} \\
-            \end{aligned}$
-    \item $\begin{aligned}[t]
-            B & \text{ is the input time series.} \\
-            \end{aligned}$
-    \item $\begin{aligned}[t]
-            f_i & \text{ represents the interpolation function of the i block.} \\
-            \end{aligned}$
-    \item $\begin{aligned}[t]
-            \theta_i & \text{ are the parameters of the i block.} \\
-            \end{aligned}$
-\end{itemize}
-
-\textbf{Non-Linear Regression:} Each block uses non-linear regression to produce forward and backward interpolation coefficients. These coefficients are then used to generate backcast and forecast outputs, refining the model’s predictions iteratively through each block.
-
 \begin{itemize}
     \item  \textbf{Non-Linear Activation Function:} 
-\end{itemize}
-\begin{equation}
+\[
 y = \sigma(Wx + b)
-\end{equation}
+\]
 Where: 
 \begin{itemize}
     \item $\begin{aligned}[t]
@@ -451,44 +448,45 @@ Where:
             b & \text{ is the bias vector.} \\
             \end{aligned}$
 \end{itemize}
-
+\end{itemize}
 \begin{itemize}
     \item  \textbf{Forward Interpolation Coefficients:} 
-\end{itemize}
-\begin{equation}
+\[
 \alpha_t = f_{\text{forward}}(x_t; \theta_f)
-\end{equation}
+\]
 Where: 
 \begin{itemize}
     \item $\begin{aligned}[t]
             \alpha_t & \text{ are the forward interpolation coefficients.} \\
             \end{aligned}$
     \item $\begin{aligned}[t]
-            f_{\text{forward}} & \text{ is the non-linear function for forward interpolation.} \\
+            f_{\text{forward}} & \text{ is the non-linear function.} \\
             \end{aligned}$
     \item $\begin{aligned}[t]
             \theta_f & \text{ are its parameters.} \\
             \end{aligned}$
 \end{itemize}
-
+\end{itemize}
 \begin{itemize}
     \item  \textbf{Backward Interpolation Coefficients:} 
-\end{itemize}
-\begin{equation}
+\[
 \beta_t = f_{\text{backward}}(x_t; \theta_b)
-\end{equation}
+\]
 Where: 
 \begin{itemize}
     \item $\begin{aligned}[t]
             \beta_t & \text{ are the backward interpolation coefficients.} \\
             \end{aligned}$
     \item $\begin{aligned}[t]
-            f_{\text{backward}} & \text{ is the non-linear function for backward interpolation.} \\
+            f_{\text{backward}} & \text{ is the non-linear function.} \\
             \end{aligned}$
     \item $\begin{aligned}[t]
             \theta_f & \text{ are its parameters.} \\
             \end{aligned}$
 \end{itemize}
+\end{itemize}
+    \end{minipage}
+\end{figure}
 
 \section{Result}
 \subsection{VNM}
@@ -609,10 +607,8 @@ Based on the VNM dataset divided into train - test (7-3,8-2 and 9-1) in 8 models
      \hline
      \end{tabular}%
      }
-     
      \\ Based on the SAB dataset divided into train - test (7-3, 8-2 and 9-1) in 8 models, we can see that the RNN model has the best prediction.
 \subsection{MSN}
-
 \resizebox{0.5\textwidth}{!}{%
     \begin{tabular}{|c|c|c|c|c|c|c|}
      \hline
@@ -669,7 +665,7 @@ Based on the VNM dataset divided into train - test (7-3,8-2 and 9-1) in 8 models
      \hline
      \end{tabular}%
      }
-     
+     \\
      \\ Based on the MSN dataset divided into train - test (7-3,8-2 and 9-1) in 8 models, we can see that the LSTM model has the best prediction.
     \begin{figure}[H]
     \centering
@@ -1176,8 +1172,9 @@ Based on the VNM dataset divided into train - test (7-3,8-2 and 9-1) in 8 models
     \end{minipage}
     \end{figure}
    \section{CONCLUSION}
-Among the eight algorithms (Linear Regression, ARIMA, RNN, GRU, LSTM, AR-MOS, Random Forest, N-HiTS), the results of this study show that the RNN, GRU, and LSTM models are the most suitable for predicting the stock prices of three corporations: VNM, SAB, and MSN. In contrast, other models (ARIMA, Linear Regression, Random Forest, N-HiTS, AR-MOS) did not perform as well This study emphasizes the necessity of employing multiple modeling approaches in financial analysis and highlights the potential of using RNN, GRU, and LSTM models for stock price prediction in the future. Further research on model tuning and optimization techniques could yield even better predictive performance. Continued innovation and research in this field are essential for developing more robust and accurate predictive tools.
+Among the eight algorithms (Linear Regression, ARIMA, RNN, GRU, LSTM, AR-MOS, Random Forest, N-HiTS), the results of this study show that the RNN, GRU, and LSTM models are the most suitable for predicting the stock prices of three corporations: VNM, SAB, and MSN. In contrast, other models (ARIMA, Linear Regression, Random Forest, N-HiTS, AR-MOS) did not perform as well. This study emphasizes the necessity of employing multiple modeling approaches in financial analysis and highlights the potential of using RNN, GRU, and LSTM models for stock price prediction in the future. Through assessment of strengths and weaknesses of these models, we aim to provide valuable guidance to investors, traders and researchers in choosing the appropriate forecasting model to predict stock prices.
 
+Based on these findings, further research on model tuning and optimization techniques could yield even better predictive performance. Exploring various advanced architectures can improve accuracy. Testing models across different markets and sectors will assess their robustness and generalizability. By following this development, researchers and practitioners can develop more complex, reliable and effective stock price prediction models. Continued innovation and research in this field are essential for developing more robust and accurate predictive tools.
 
  \section{ACKNOWLEDGMENT}
    Our team would like to express our deepest gratitude to \textbf{PhD. Nguyen Dinh Thuan}  and \textbf{Mr. Nguyen Minh Nhut}, whose guidance and support helped us successfully complete this project. Despite our best efforts to apply what we have learned, it is difficult to avoid mistakes entirely. Therefore, we look forward to receiving feedback from our instructors to improve and refine our work. This feedback will help us accumulate knowledge and experience, preparing us better for the future.
@@ -1210,6 +1207,10 @@ https://www.analyticsvidhya.com/blog/2021/06/understanding-random-forest/
 \bibitem{b19} "Autoregressive Extensions of EMOS with
 Application to Surface Temperature Ensemble
 Postprocessing,19. April 2024.https://presentations.copernicus.org/EGU24/EGU24-4357_presentation.pdf"
+\bibitem{b20} “Random Forest Algorithm”, https://www.javatpoint.com/machine-learning-random-forest-algorithm
+\bibitem{b21}Tanushree Biswal, “Random Forest for Time Series Forecasting”, Last updated: Feb. 26, 2024
+https://www.analyticsvidhya.com/blog/2021/06/random-forest-for-time-series-forecasting/
+\bibitem{b22}GeeksforGeeks, “Random Forest for Time Series Forecasting”, Last Updated : 01 Nov, 2023 https://www.geeksforgeeks.org/random-forest-for-time-series-forecasting-using-r/
 
 \end{thebibliography}
 %%%%%%%%%%%%%%%
